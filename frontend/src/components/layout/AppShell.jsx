@@ -131,7 +131,7 @@ function AppShell() {
           ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: 'block', lg: 'none' },
-            '& .MuiDrawer-paper': { width: drawerWidth },
+            '& .MuiDrawer-paper': { width: { xs: 220, sm: drawerWidth } },
           }}
         >
           {drawerContent}
@@ -147,10 +147,11 @@ function AppShell() {
           {drawerContent}
         </Drawer>
       </Box>
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 1.5, sm: 2 } }}>
+      <Box component="main" sx={{ flexGrow: 1, p: { xs: 1, sm: 2 } }}>
         <IconButton
           onClick={handleDrawerToggle}
-          sx={{ display: { lg: 'none' }, mb: 1, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}
+          size="small"
+          sx={{ display: { lg: 'none' }, mb: 0.75, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}
         >
           <MenuRoundedIcon />
         </IconButton>

@@ -24,6 +24,12 @@ const transactionSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    categoryRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
+      index: true,
+    },
     amount: {
       type: Number,
       required: true,
@@ -38,8 +44,35 @@ const transactionSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    source: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    paymentMethod: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
+    isRecurring: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    recurringInterval: {
+      type: String,
+      enum: ["daily", "weekly", "monthly", "yearly", "none"],
+      default: "none",
+    },
   },
   { timestamps: true }
 );
+
+transactionSchema.index({ user: 1, type: 1, date: -1 });
+transactionSchema.index({ user: 1, category: 1, date: -1 });
 
 export const Transaction = mongoose.model("Transaction", transactionSchema);

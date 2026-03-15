@@ -49,4 +49,36 @@ export const transactionsApi = {
   },
 }
 
+export const settingsApi = {
+  get: async () => {
+    const { data } = await api.get('/settings')
+    return data
+  },
+  update: async (payload) => {
+    const { data } = await api.patch('/settings', payload)
+    return data
+  },
+  updateProfile: async (payload) => {
+    const { data } = await api.patch('/settings/profile', payload)
+    return data
+  },
+}
+
+export const categoriesApi = {
+  list: async (type) => {
+    const { data } = await api.get('/categories', {
+      params: type ? { type } : undefined,
+    })
+    return data
+  },
+  create: async (payload) => {
+    const { data } = await api.post('/categories', payload)
+    return data
+  },
+  remove: async (id) => {
+    const { data } = await api.delete(`/categories/${id}`)
+    return data
+  },
+}
+
 export default api

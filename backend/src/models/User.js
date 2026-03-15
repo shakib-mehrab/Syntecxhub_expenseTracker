@@ -19,8 +19,20 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    avatarUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
   },
   { timestamps: true }
 );
+
+userSchema.index({ email: 1 }, { unique: true });
 
 export const User = mongoose.model("User", userSchema);

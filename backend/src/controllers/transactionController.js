@@ -1,4 +1,5 @@
 import XLSX from "xlsx";
+import { Category } from "../models/Category.js";
 import { Transaction } from "../models/Transaction.js";
 
 export const getTransactions = async (req, res) => {
@@ -19,9 +20,9 @@ export const getTransactions = async (req, res) => {
 
 export const createTransaction = async (req, res) => {
   try {
-    const { type, title, category, amount, date, note } = req.body;
+    const { type, title, category, categoryRef, amount, date, note, source, paymentMethod, tags, isRecurring, recurringInterval } = req.body;
 
-    if (!type || !title || !category || !amount || !date) {
+    if (!type || !title || !amount || !date) {
       return res.status(400).json({ message: "Required fields are missing." });
     }
 
@@ -34,14 +35,45 @@ export const createTransaction = async (req, res) => {
       return res.status(400).json({ message: "Amount must be greater than zero." });
     }
 
+    let normalizedCategory = category ? String(category).trim() : "";
+    let normalizedCategoryRef = null;
+
+    if (categoryRef) {
+      const categoryEntity = await Category.findOne({
+        _id: categoryRef,
+        user: req.user.id,
+        type,
+        isArchived: false,
+      });
+
+      if (!categoryEntity) {
+        return res.status(400).json({ message: "Invalid category reference." });
+      }
+
+      normalizedCategoryRef = categoryEntity._id;
+      if (!normalizedCategory) {
+        normalizedCategory = categoryEntity.name;
+      }
+    }
+
+    if (!normalizedCategory) {
+      return res.status(400).json({ message: "Category is required." });
+    }
+
     const transaction = await Transaction.create({
       user: req.user.id,
       type,
       title,
-      category,
+      category: normalizedCategory,
+      categoryRef: normalizedCategoryRef,
       amount: parsedAmount,
       date,
       note: note || "",
+      source: source || "",
+      paymentMethod: paymentMethod || "",
+      tags: Array.isArray(tags) ? tags : [],
+      isRecurring: Boolean(isRecurring),
+      recurringInterval: isRecurring ? recurringInterval || "monthly" : "none",
     });
 
     return res.status(201).json(transaction);

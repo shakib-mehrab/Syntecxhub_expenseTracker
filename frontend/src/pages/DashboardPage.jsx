@@ -54,19 +54,20 @@ function DashboardPage() {
   const topInsights = useMemo(() => insights.slice(0, 3), [insights])
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={{ xs: 1.25, sm: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={2}>
         <div>
-          <Typography variant="h4">Overview</Typography>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.35rem', sm: '1.75rem' } }}>Overview</Typography>
           <Typography color="text.secondary">
             A live snapshot of your balance, income, expenses, and recent performance.
           </Typography>
         </div>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.25}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
           <Button
             variant="outlined"
             startIcon={<SavingsRoundedIcon />}
             onClick={() => navigate('/income')}
+            fullWidth
           >
             Income
           </Button>
@@ -74,13 +75,14 @@ function DashboardPage() {
             variant="outlined"
             startIcon={<ReceiptLongRoundedIcon />}
             onClick={() => navigate('/expenses')}
+            fullWidth
           >
             Expenses
           </Button>
-          <Button variant="outlined" startIcon={<RefreshRoundedIcon />} onClick={handleRefresh} disabled={isLoading}>
+          <Button variant="outlined" startIcon={<RefreshRoundedIcon />} onClick={handleRefresh} disabled={isLoading} fullWidth>
             Refresh
           </Button>
-          <Button variant="contained" startIcon={<DownloadRoundedIcon />} onClick={handleExportAll}>
+          <Button variant="contained" startIcon={<DownloadRoundedIcon />} onClick={handleExportAll} fullWidth>
             Export Report
           </Button>
         </Stack>

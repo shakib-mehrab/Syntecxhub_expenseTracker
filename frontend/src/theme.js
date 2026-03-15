@@ -40,6 +40,21 @@ const theme = createTheme({
       fontFamily: "Bahnschrift, 'Segoe UI Variable', sans-serif",
       fontWeight: 700,
     },
+    h4: {
+      fontSize: '1.75rem',
+      lineHeight: 1.25,
+      fontWeight: 600,
+    },
+    h5: {
+      fontSize: '1.3rem',
+      lineHeight: 1.2,
+      fontWeight: 600,
+    },
+    h6: {
+      fontSize: '1rem',
+      lineHeight: 1.3,
+      fontWeight: 600,
+    },
     button: {
       textTransform: 'none',
       fontWeight: 600,

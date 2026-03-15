@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { DEMO_MODE, STORAGE_KEYS } from '../config'
-import { authApi, setAuthToken } from '../services/api'
+import { authApi, setAuthToken, settingsApi } from '../services/api'
 
 const AuthContext = createContext(null)
 
@@ -112,18 +112,50 @@ export function AuthProvider({ children }) {
     return response
   }, [])
 
-  const updateProfile = useCallback((profileUpdates) => {
-    setUser((currentUser) => {
-      if (!currentUser) {
-        return currentUser
+  const updateProfile = useCallback(async (profileUpdates) => {
+    const normalizedPayload = {
+      name: profileUpdates.name?.trim(),
+      email: profileUpdates.email?.trim(),
+    }
+
+    try {
+      const response = await settingsApi.updateProfile(normalizedPayload)
+      setUser((currentUser) => {
+        if (!currentUser) {
+          return currentUser
+        }
+
+        return {
+          ...currentUser,
+          name: response.name || currentUser.name,
+          email: response.email || currentUser.email,
+          avatarUrl: response.avatarUrl || currentUser.avatarUrl,
+        }
+      })
+
+      return response
+    } catch (requestError) {
+      if (!DEMO_MODE) {
+        throw requestError
       }
 
+      setUser((currentUser) => {
+        if (!currentUser) {
+          return currentUser
+        }
+
+        return {
+          ...currentUser,
+          name: normalizedPayload.name || currentUser.name,
+          email: normalizedPayload.email || currentUser.email,
+        }
+      })
+
       return {
-        ...currentUser,
-        name: profileUpdates.name?.trim() || currentUser.name,
-        email: profileUpdates.email?.trim() || currentUser.email,
+        name: normalizedPayload.name,
+        email: normalizedPayload.email,
       }
-    })
+    }
   }, [])
 
   const value = useMemo(

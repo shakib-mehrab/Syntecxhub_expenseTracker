@@ -1,5 +1,8 @@
 import bcrypt from "bcryptjs";
+import { Category } from "../models/Category.js";
 import { User } from "../models/User.js";
+import { UserSettings } from "../models/UserSettings.js";
+import { DEFAULT_CATEGORIES, DEFAULT_SETTINGS } from "../utils/defaults.js";
 import { signToken } from "../utils/token.js";
 
 export const signup = async (req, res) => {
@@ -22,6 +25,28 @@ export const signup = async (req, res) => {
       password: hashedPassword,
     });
 
+    await UserSettings.create({
+      user: user._id,
+      ...DEFAULT_SETTINGS,
+    });
+
+    const categoryRows = [
+      ...DEFAULT_CATEGORIES.income.map((categoryName) => ({
+        user: user._id,
+        type: "income",
+        name: categoryName,
+        isSystem: true,
+      })),
+      ...DEFAULT_CATEGORIES.expense.map((categoryName) => ({
+        user: user._id,
+        type: "expense",
+        name: categoryName,
+        isSystem: true,
+      })),
+    ];
+
+    await Category.insertMany(categoryRows, { ordered: false });
+
     const token = signToken({ id: user._id.toString() });
 
     return res.status(201).json({
@@ -30,6 +55,7 @@ export const signup = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        avatarUrl: user.avatarUrl,
       },
     });
   } catch (error) {
@@ -63,6 +89,7 @@ export const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        avatarUrl: user.avatarUrl,
       },
     });
   } catch (error) {

@@ -44,17 +44,17 @@ function TransactionsPage({ type }) {
   }, [exportTransactions, type])
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={{ xs: 1.25, sm: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={2}>
         <div>
-          <Typography variant="h4">{type === 'income' ? 'Income' : 'Expenses'}</Typography>
+          <Typography variant="h4" sx={{ fontSize: { xs: '1.35rem', sm: '1.75rem' } }}>{type === 'income' ? 'Income' : 'Expenses'}</Typography>
           <Typography color="text.secondary">
             Add, review, delete, and export your {type} records with category-based visibility.
           </Typography>
         </div>
-        <Stack direction="row" spacing={1.25} alignItems="center">
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems={{ xs: 'stretch', sm: 'center' }}>
           <Chip label={`${items.length} records`} color={type === 'income' ? 'success' : 'error'} variant="outlined" />
-          <Button variant="contained" startIcon={<DownloadRoundedIcon />} onClick={handleExport}>
+          <Button variant="contained" startIcon={<DownloadRoundedIcon />} onClick={handleExport} fullWidth>
             Export {type === 'income' ? 'Income' : 'Expenses'}
           </Button>
         </Stack>

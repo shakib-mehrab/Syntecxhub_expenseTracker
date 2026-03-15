@@ -28,6 +28,8 @@ function SettingsPage() {
     addCategory,
     removeCategory,
     resetSettings,
+    settingsError,
+    isSettingsLoading,
   } = useSettings()
 
   const [profileForm, setProfileForm] = useState({
@@ -37,42 +39,80 @@ function SettingsPage() {
   const [categoryType, setCategoryType] = useState('expense')
   const [categoryInput, setCategoryInput] = useState('')
   const [status, setStatus] = useState('')
+  const [actionError, setActionError] = useState('')
 
   const totalCategories = useMemo(
     () => categories.income.length + categories.expense.length,
     [categories.expense.length, categories.income.length],
   )
 
-  const handleProfileSave = () => {
-    updateProfile(profileForm)
-    setStatus('Profile updated successfully.')
+  const handleProfileSave = async () => {
+    setActionError('')
+    try {
+      await updateProfile(profileForm)
+      setStatus('Profile updated successfully.')
+    } catch (requestError) {
+      setActionError(requestError.response?.data?.message || 'Unable to update profile.')
+    }
   }
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!categoryInput.trim()) {
       return
     }
 
-    addCategory(categoryType, categoryInput)
-    setCategoryInput('')
-    setStatus('Category added successfully.')
+    setActionError('')
+    try {
+      await addCategory(categoryType, categoryInput)
+      setCategoryInput('')
+      setStatus('Category added successfully.')
+    } catch (requestError) {
+      setActionError(requestError.response?.data?.message || 'Unable to add category.')
+    }
   }
 
-  const handleReset = () => {
-    resetSettings()
-    setStatus('Settings reset to defaults.')
+  const handleCategoryRemove = async (type, category) => {
+    setActionError('')
+    try {
+      await removeCategory(type, category)
+      setStatus('Category removed successfully.')
+    } catch (requestError) {
+      setActionError(requestError.response?.data?.message || 'Unable to remove category.')
+    }
+  }
+
+  const handleReset = async () => {
+    setActionError('')
+    try {
+      await resetSettings()
+      setStatus('Settings reset to defaults.')
+    } catch (requestError) {
+      setActionError(requestError.response?.data?.message || 'Unable to reset settings.')
+    }
+  }
+
+  const handleCurrencyChange = async (nextCurrency) => {
+    setActionError('')
+    try {
+      await setCurrency(nextCurrency)
+      setStatus('Currency updated successfully.')
+    } catch (requestError) {
+      setActionError(requestError.response?.data?.message || 'Unable to update currency.')
+    }
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={{ xs: 1.25, sm: 2 }}>
       <div>
-        <Typography variant="h4">Settings</Typography>
+        <Typography variant="h4" sx={{ fontSize: { xs: '1.35rem', sm: '1.75rem' } }}>Settings</Typography>
         <Typography color="text.secondary">
           Update profile, tweak currencies, and manage income/expense categories.
         </Typography>
       </div>
 
       {status ? <Alert severity="success">{status}</Alert> : null}
+      {actionError ? <Alert severity="error">{actionError}</Alert> : null}
+      {settingsError ? <Alert severity="warning">{settingsError}</Alert> : null}
 
       <Card className="surface-card">
         <CardContent>
@@ -89,8 +129,8 @@ function SettingsPage() {
               value={profileForm.email}
               onChange={(event) => setProfileForm((prev) => ({ ...prev, email: event.target.value }))}
             />
-            <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleProfileSave}>
-              Save Profile
+            <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleProfileSave} fullWidth>
+              {isSettingsLoading ? 'Please wait...' : 'Save Profile'}
             </Button>
           </Stack>
         </CardContent>
@@ -104,7 +144,7 @@ function SettingsPage() {
               select
               label="Default Currency"
               value={currency}
-              onChange={(event) => setCurrency(event.target.value)}
+              onChange={(event) => handleCurrencyChange(event.target.value)}
             >
               {supportedCurrencies.map((currencyCode) => (
                 <MenuItem key={currencyCode} value={currencyCode}>
@@ -140,7 +180,7 @@ function SettingsPage() {
                 value={categoryInput}
                 onChange={(event) => setCategoryInput(event.target.value)}
               />
-              <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={handleAddCategory}>
+              <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={handleAddCategory} fullWidth>
                 Add
               </Button>
             </Stack>
@@ -152,7 +192,7 @@ function SettingsPage() {
                   <Chip
                     key={`income-${category}`}
                     label={category}
-                    onDelete={() => removeCategory('income', category)}
+                    onDelete={() => handleCategoryRemove('income', category)}
                     deleteIcon={<DeleteOutlineRoundedIcon />}
                     color="success"
                     variant="outlined"
@@ -168,7 +208,7 @@ function SettingsPage() {
                   <Chip
                     key={`expense-${category}`}
                     label={category}
-                    onDelete={() => removeCategory('expense', category)}
+                    onDelete={() => handleCategoryRemove('expense', category)}
                     deleteIcon={<DeleteOutlineRoundedIcon />}
                     color="error"
                     variant="outlined"

@@ -4,6 +4,8 @@ import express from "express";
 import morgan from "morgan";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 
 dotenv.config();
@@ -25,6 +27,8 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/settings", settingsRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

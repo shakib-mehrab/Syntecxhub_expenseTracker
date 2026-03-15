@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Card, CardContent, Stack, Typography } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/material'
 import {
   Bar,
   BarChart,
@@ -21,6 +22,8 @@ const chartColors = ['#184d7a', '#d97706', '#198754', '#c2410c', '#7c3aed', '#0f
 
 function ChartsPanel({ income, expenses, transactions }) {
   const { currencyFormatter, dateLocale } = useSettings()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const monthlyData = useMemo(() => {
     const monthMap = new Map()
@@ -61,7 +64,7 @@ function ChartsPanel({ income, expenses, transactions }) {
   )
 
   return (
-    <Stack spacing={2.25} className="fade-in">
+    <Stack spacing={{ xs: 1.25, sm: 2.25 }} className="fade-in">
       <div className="chart-grid">
         <Card className="surface-card">
           <CardContent>
@@ -69,13 +72,13 @@ function ChartsPanel({ income, expenses, transactions }) {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Monthly comparison across recent records.
             </Typography>
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
               <BarChart data={monthlyData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip formatter={(value) => currencyFormatter.format(value)} />
-                <Legend />
+                {!isMobile ? <Legend /> : null}
                 <Bar dataKey="income" fill="#198754" radius={[10, 10, 0, 0]} />
                 <Bar dataKey="expense" fill="#c2410c" radius={[10, 10, 0, 0]} />
               </BarChart>
@@ -88,15 +91,15 @@ function ChartsPanel({ income, expenses, transactions }) {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Where most of your spending is going.
             </Typography>
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
               <PieChart>
                 <Tooltip formatter={(value) => currencyFormatter.format(value)} />
-                <Pie data={categoryData} dataKey="value" nameKey="name" innerRadius={70} outerRadius={110} paddingAngle={4}>
+                <Pie data={categoryData} dataKey="value" nameKey="name" innerRadius={isMobile ? 45 : 70} outerRadius={isMobile ? 75 : 110} paddingAngle={4}>
                   {categoryData.map((entry, index) => (
                     <Cell key={entry.name} fill={chartColors[index % chartColors.length]} />
                   ))}
                 </Pie>
-                <Legend />
+                {!isMobile ? <Legend /> : null}
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
@@ -109,7 +112,7 @@ function ChartsPanel({ income, expenses, transactions }) {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Positive values indicate income, negative values indicate expenses.
             </Typography>
-            <ResponsiveContainer width="100%" height={260}>
+            <ResponsiveContainer width="100%" height={isMobile ? 180 : 260}>
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="name" />

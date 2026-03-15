@@ -109,7 +109,20 @@
 }
 
 @media (max-width: 700px) {
+  .summary-grid,
+  .chart-grid,
+  .mini-chart-grid,
+  .insight-strip {
+    gap: 8px;
+  }
+
   .transaction-grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .transaction-delete {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
