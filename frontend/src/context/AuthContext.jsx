@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { DEMO_MODE, STORAGE_KEYS } from '../config'
-import { authApi, setAuthToken, settingsApi } from '../services/api'
+import { authApi, setAuthToken, setUnauthorizedHandler, settingsApi } from '../services/api'
 
 const AuthContext = createContext(null)
 
@@ -50,6 +50,18 @@ export function AuthProvider({ children }) {
 
     localStorage.removeItem(STORAGE_KEYS.user)
   }, [user])
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      setToken('')
+      setUser(null)
+      setAuthToken('')
+    })
+
+    return () => {
+      setUnauthorizedHandler(null)
+    }
+  }, [])
 
   const login = useCallback(async (credentials) => {
     setIsAuthLoading(true)

@@ -5,6 +5,23 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 })
 
+let unauthorizedHandler = null
+
+export const setUnauthorizedHandler = (handler) => {
+  unauthorizedHandler = handler
+}
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401 && typeof unauthorizedHandler === 'function') {
+      unauthorizedHandler(error)
+    }
+
+    return Promise.reject(error)
+  },
+)
+
 export const setAuthToken = (token) => {
   if (token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`
