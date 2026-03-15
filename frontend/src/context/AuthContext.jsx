@@ -79,6 +79,7 @@ export function AuthProvider({ children }) {
         response = createDemoAuthPayload(credentials)
       }
 
+      setAuthToken(response.token)
       setToken(response.token)
       setUser(response.user)
       return response
@@ -103,6 +104,7 @@ export function AuthProvider({ children }) {
         response = createDemoAuthPayload(payload)
       }
 
+      setAuthToken(response.token)
       setToken(response.token)
       setUser(response.user)
       return response
@@ -119,6 +121,7 @@ export function AuthProvider({ children }) {
 
   const continueWithDemo = useCallback(() => {
     const response = createDemoAuthPayload()
+    setAuthToken(response.token)
     setToken(response.token)
     setUser(response.user)
     return response
