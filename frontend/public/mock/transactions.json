@@ -1,0 +1,76 @@
+{
+  "transactions": [
+    {
+      "_id": "demo-1",
+      "type": "income",
+      "title": "Monthly Salary",
+      "category": "Salary",
+      "amount": 85000,
+      "date": "2026-03-01T00:00:00.000Z",
+      "note": "Primary income deposit"
+    },
+    {
+      "_id": "demo-2",
+      "type": "income",
+      "title": "Freelance UI Audit",
+      "category": "Freelance",
+      "amount": 18000,
+      "date": "2026-03-07T00:00:00.000Z",
+      "note": "Weekend consulting project"
+    },
+    {
+      "_id": "demo-3",
+      "type": "expense",
+      "title": "Apartment Rent",
+      "category": "Housing",
+      "amount": 24000,
+      "date": "2026-03-03T00:00:00.000Z",
+      "note": "March rental payment"
+    },
+    {
+      "_id": "demo-4",
+      "type": "expense",
+      "title": "Groceries",
+      "category": "Food",
+      "amount": 4600,
+      "date": "2026-03-08T00:00:00.000Z",
+      "note": "Weekly supermarket run"
+    },
+    {
+      "_id": "demo-5",
+      "type": "expense",
+      "title": "Ride Share",
+      "category": "Transport",
+      "amount": 1850,
+      "date": "2026-03-09T00:00:00.000Z",
+      "note": "Office commute and client visit"
+    },
+    {
+      "_id": "demo-6",
+      "type": "income",
+      "title": "Dividend Payout",
+      "category": "Investments",
+      "amount": 6200,
+      "date": "2026-02-21T00:00:00.000Z",
+      "note": "Quarterly portfolio payout"
+    },
+    {
+      "_id": "demo-7",
+      "type": "expense",
+      "title": "Electricity Bill",
+      "category": "Utilities",
+      "amount": 2750,
+      "date": "2026-02-26T00:00:00.000Z",
+      "note": "Utility autopay"
+    },
+    {
+      "_id": "demo-8",
+      "type": "expense",
+      "title": "Streaming + Apps",
+      "category": "Entertainment",
+      "amount": 1299,
+      "date": "2026-03-11T00:00:00.000Z",
+      "note": "Recurring subscriptions"
+    }
+  ]
+}
