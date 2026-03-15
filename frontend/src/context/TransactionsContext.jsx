@@ -75,7 +75,7 @@ export function TransactionsProvider({ children }) {
         }
 
         const storedRows = readDemoTransactions()
-        const mockRows = storedRows || await fetch('/mock/transactions.json').then((response) => response.json()).then((data) => data.transactions || [])
+        const mockRows = storedRows || []
 
         if (!storedRows) {
           writeDemoTransactions(mockRows)
